@@ -1,26 +1,75 @@
-<template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
-</template>
+<script setup>
+import { ref, computed } from 'vue'
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
+const titleClass = ref('title')
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
+const named = ref(0)
+const name = ref("")
+function submit() {
+  if (name.value === "liuni")
+    named.value = 2
+  else
+    named.value = 1
+}
+function rename() {
+  named.value = 0
+}
+
+let id = 0;
+const newTodo = ref('')
+const hideCompleted = ref(false)
+const todos = ref([
+  { id: id++, text: '背单词', done: false },
+  { id: id++, text: '做数学题', done: false },
+  { id: id++, text: '学习vue', done: false }
+])
+const filteredTodos = computed(() =>{
+  return hideCompleted.value
+    ? todos.value.filter((t) => !t.done)
+    : todos.value
+})
+function addTodo() {
+  todos.value.push({ id: id++, text: newTodo.value, done: false})
+  newTodo.value = ''
+}
+function removeTodo(item) {
+  todos.value = todos.value.filter((t) => t !== item)
 }
 </script>
 
+<template>
+  <h1 :class="titleClass">Nice to Meet You</h1>
+
+  <input v-model="name" placeholder="who are you">
+  <button @click="submit">submit</button>
+  <button @click="rename">rename</button>
+
+  <li v-if="named === 0">Please enter your name.</li>
+  <li v-else-if="named === 1">Hello, {{ name }}!</li>
+  <ul v-else-if="named === 2">
+    <li>Welcome home.</li>
+    <form @submit.prevent="addTodo">
+      <input v-model="newTodo" required placeholder="new todo">
+      <button>Add Todo</button>
+    </form>
+    <ul>
+      <li v-for="item in filteredTodos" :key="item.id">
+        <input type="checkbox" v-model="item.done">
+        <span :class="{ done: item.done }">{{ item.text }}</span>
+        <button @click="removeTodo(item)">Done</button>
+      </li>
+    </ul>
+    <button @click="hideCompleted = !hideCompleted">
+      {{ hideCompleted ? 'Show all' : 'Hide completed' }}
+    </button>
+  </ul>
+</template>
+
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.title {
+  color: green;
+}
+.done {
+  text-decoration: line-through;
 }
 </style>
