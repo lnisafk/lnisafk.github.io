@@ -2,12 +2,13 @@
 import { ref, computed } from 'vue'
 
 const titleClass = ref('title')
-
 const named = ref(0)
 const name = ref("")
 function submit() {
-  if (name.value === "liuni")
+  if (name.value === "Ni")
     named.value = 2
+  else if (name.value === "Rukia")
+    named.value = 3
   else
     named.value = 1
 }
@@ -35,6 +36,8 @@ function addTodo() {
 function removeTodo(item) {
   todos.value = todos.value.filter((t) => t !== item)
 }
+
+
 </script>
 
 <template>
@@ -63,7 +66,20 @@ function removeTodo(item) {
       {{ hideCompleted ? 'Show all' : 'Hide completed' }}
     </button>
   </ul>
+  <ul v-else-if="named === 3">
+    <a :href="downloadUrl" download="snl.zip">click to download</a>
+  </ul>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+        downloadUrl: 'https://raw.githubusercontent.com/lnisafk/snl/main/snl.zip',
+    };
+  },
+};
+</script>
 
 <style>
 .title {
